@@ -87,19 +87,19 @@
           body: JSON.stringify({
             model: "meta-llama/llama-3-8b-instruct:free",
             messages: [
-              {
-                role: "system",
-                content: "Ты - талантливый писатель. Напиши художественный текст по запросу. Пиши на языке запроса. Не объясняй, просто дай текст."
-              },
-              {
-                role: "user",
-                content: userMessage
-              }
+            {
+              role: "system",
+              content: "Ты — талантливый писатель. Напиши художественный текст по запросу. Пиши на языке запроса. Не объясняй, просто дай текст."
+            },
+            {
+              role: "user",
+              content: userMessage
+            }
             ],
             max_tokens: 600,
             temperature: 0.8
           })
-        });
+      });
 
         const data = await response.json();
         const botReply = data.text || data.error || "Не удалось сгенерировать текст.";
