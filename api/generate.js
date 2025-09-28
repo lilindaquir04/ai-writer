@@ -1,5 +1,5 @@
-// api/generate.js
 export default async function handler(req, res) {
+  // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -32,12 +32,15 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
+
     if (data.choices?.[0]?.message?.content) {
       res.status(200).json({ text: data.choices[0].message.content });
     } else {
+      console.error('OpenRouter error:', data);
       res.status(500).json({ error: 'Ошибка генерации' });
     }
   } catch (e) {
+    console.error('Proxy error:', e);
     res.status(500).json({ error: 'Серверная ошибка' });
   }
 }
