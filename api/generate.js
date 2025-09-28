@@ -1,4 +1,14 @@
 export default async function handler(req, res) {
+  // ✅ Добавляем CORS-заголовки
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // Обработка OPTIONS для preflight
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Метод не разрешён' });
   }
@@ -20,12 +30,9 @@ export default async function handler(req, res) {
         messages: [
           {
             role: "system",
-            content: "Ты — талантливый писатель. Напиши художественный текст (рассказ, стих, сцену) по запросу пользователя. Пиши на том языке, на котором задан запрос. Не объясняй, просто дай текст."
+            content: "Ты — талантливый писатель. Напиши художественный текст по запросу. Пиши на языке запроса. Не объясняй, просто дай текст."
           },
-          {
-            role: "user",
-            content: prompt
-          }
+          { role: "user", content: prompt }
         ],
         max_tokens: 600,
         temperature: 0.8
@@ -37,11 +44,9 @@ export default async function handler(req, res) {
     if (data.choices?.[0]?.message?.content) {
       res.status(200).json({ text: data.choices[0].message.content });
     } else {
-      console.error('Ошибка OpenRouter:', data);
-      res.status(500).json({ error: 'Не удалось сгенерировать текст' });
+      res.status(500).json({ error: 'Ошибка генерации' });
     }
-  } catch (error) {
-    console.error('Ошибка прокси:', error);
+  } catch (e) {
     res.status(500).json({ error: 'Серверная ошибка' });
   }
 }
