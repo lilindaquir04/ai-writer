@@ -16,7 +16,7 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: "meta-llama/llama-3-8b-instruct:free",
+        model: "google/gemma-3-12b-it:free",
         messages: [
           {
             role: "system",
