@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Story Writer</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    #chat {
+      height: 400px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 15px;
+      margin-bottom: 15px;
+      background: white;
+      border-radius: 8px;
+    }
+    .message {
+      margin-bottom: 12px;
+      padding: 10px;
+      border-radius: 6px;
+    }
+    .user { background: #e3f2fd; }
+    .bot { background: #f1f8e9; }
+    input {
+      width: 70%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      width: 25%;
+      padding: 10px;
+      font-size: 16px;
+      background: #4a6cf7;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    button:hover { background: #3a5bf5; }
+  </style>
+</head>
+<body>
+  <h1>Всякуюшляпусочинятор</h1>
+  <p>Написать запрос на русском или английском — и получить художественный текст!</p>
+  
+  <div id="chat"></div>
+  
+  <input type="text" id="user-input" placeholder="Например: Написать сказку про робота в стиле Чехова..." />
+  <button id="send-btn" onclick="sendMessage()">Сгенерировать</button>
+
+  <script>
+    // 🔑 ЗАМЕНИ ЭТОТ URL на твой из Vercel!
+    const API_URL = "https://ai-writer-js4k8edpl-lyohanasos-projects.vercel.app";
+
+    async function sendMessage() {
+      const input = document.getElementById("user-input");
+      const chat = document.getElementById("chat");
+      const btn = document.getElementById("send-btn");
+      
+      const userMessage = input.value.trim();
+      if (!userMessage) return;
+
+      chat.innerHTML += `<div class="message user"><strong>Вы:</strong> ${userMessage}</div>`;
+      chat.scrollTop = chat.scrollHeight;
+      
+      btn.disabled = true;
+      btn.textContent = "Генерирую...";
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: userMessage })
+        });
+
+        const data = await response.json();
+        const botReply = data.text || data.error || "Не удалось сгенерировать текст.";
+
+        chat.innerHTML += `<div class="message bot"><strong>ИИ:</strong> ${botReply}</div>`;
+      } catch (error) {
+        chat.innerHTML += `<div class="message bot"><strong>Ошибка:</strong> Проверьте подключение.</div>`;
+        console.error(error);
+      }
+
+      btn.disabled = false;
+      btn.textContent = "Сгенерировать";
+      input.value = "";
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    document.getElementById("user-input").addEventListener("keypress", (e) => {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
+</body>
+</html>
