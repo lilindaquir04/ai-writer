@@ -33,7 +33,7 @@ export default async function handler(req, res) {
       })
     });
 
-    console.log('Статус ответа от OpenRouter:', response.status);
+    
 
     const data = await response.json();
     console.log('Ответ от OpenRouter:', JSON.stringify(data, null, 2));
