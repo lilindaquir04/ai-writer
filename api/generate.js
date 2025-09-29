@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        'Authorization': `Bearer ${}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
           },
           { role: "user", content: prompt }
         ],
-        max_tokens: 2000,
+   
         temperature: 0.8
       })
     });
