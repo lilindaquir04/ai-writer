@@ -1,6 +1,8 @@
 export default async function handler(req, res) {
   // CORS
-
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Метод не разрешён' });
@@ -14,7 +16,7 @@ export default async function handler(req, res) {
     const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${}`,
+        'Authorization': Bearer ${process.env.OPENROUTER_API_KEY},
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -26,7 +28,7 @@ export default async function handler(req, res) {
           },
           { role: "user", content: prompt }
         ],
-   
+        max_tokens: 2000,
         temperature: 0.8
       })
     });
