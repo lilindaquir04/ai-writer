@@ -21,4 +21,36 @@ jobs:
             echo "❌ Ошибка: файл api/generate.js не найден!"
             exit 1
           fi
-          echo "✅ Файл api/generate.js найден — прокси готов к деплою."
+          echo "✅ Файл api/generate.js найден."
+
+      - name: Check critical code elements
+        run: |
+          FILE="api/generate.js"
+          ERRORS=0
+
+          if ! grep -q "export default" "$FILE"; then
+            echo "❌ Отсутствует 'export default' — Vercel не распознает функцию."
+            ERRORS=1
+          fi
+
+          if ! grep -q "OPENROUTER_API_KEY" "$FILE"; then
+            echo "❌ Отсутствует OPENROUTER_API_KEY — нет подключения к ИИ."
+            ERRORS=1
+          fi
+
+          if ! grep -q "max_tokens" "$FILE"; then
+            echo "❌ Отсутствует max_tokens — возможна обрезка текста."
+            ERRORS=1
+          fi
+
+          if ! grep -q "Access-Control-Allow-Origin" "$FILE"; then
+            echo "❌ Отсутствуют CORS-заголовки — сайт не сможет подключиться."
+            ERRORS=1
+          fi
+
+          if [ $ERRORS -eq 1 ]; then
+            echo "❗ Найдены критические ошибки в коде прокси."
+            exit 1
+          else
+            echo "✅ Все ключевые элементы в api/generate.js на месте."
+          fi
