@@ -1,0 +1,21 @@
+name: Test API Proxy
+
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'api/**' ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check api/generate.js exists
+        run: |
+          if ! [ -f api/generate.js ]; then
+            echo "❌ api/generate.js not found!"
+            exit 1
+          fi
+          echo "✅ API file exists"
